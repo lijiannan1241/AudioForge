@@ -1,0 +1,47 @@
+# LoudPipe
+
+> Batch audio processing and document-to-audiobook toolchain for Windows.
+> 面向 Windows 的批量音频处理与文档转有声书工具链。
+
+LoudPipe is a desktop application for Windows 10 version 19041 or later (x64).
+Version: 1.10.0.0. It normalizes audio loudness in batches to -23, -19 or -16 LUFS
+with 4x oversampled true-peak limiting (measured deviation within 0.1 LU),
+denoises and de-esses, converts between seven containers (WAV, MP3, FLAC, M4A,
+AAC, OGG, Opus), and writes chapters and metadata. It converts eight document
+formats — including DOCX, PDF, EPUB and SRT — into chaptered M4B audiobooks using
+318 auditionable voices across 70+ languages, with offline OCR for scanned PDFs,
+a pronunciation dictionary and resume. Every batch produces CSV, JSON and HTML
+reports with waveform, STFT spectrum and six-band energy. Multi-voice A/B is
+loudness-aligned. JSON presets and a CLI support CI and Wwise / FMOD pipelines.
+
+Processing is local-first: except for speech synthesis, audio files, source
+documents, filenames and paths are never uploaded. There is no account, no
+telemetry and no crash reporting. Speech synthesis uses the Microsoft Edge read
+aloud service by default; Azure, OpenAI and ElevenLabs keys can be supplied.
+
+Official listing: https://apps.microsoft.com/detail/9pn6cswk4jpz?cid=DevShareMCLPCS&hl=zh-CN&gl=US
+Privacy policy: https://lijiannan1241.github.io/AudioForge/privacy.html
+Source code: https://github.com/lijiannan1241/AudioForge
+
+## Key facts
+
+- Product: LoudPipe, version 1.10.0.0
+- Category: Windows desktop audio toolchain
+- Loudness targets: -23 / -19 / -16 LUFS, true peak at or below -1 dBTP
+- Voices: 318, in more than 70 languages
+- Output containers: 7 (WAV, MP3, FLAC, M4A, AAC, OGG, Opus)
+- Reports: CSV, JSON, HTML, with waveform and STFT spectrum
+- Local-first: yes, except speech synthesis
+- Privacy: no account, no telemetry, no crash reporting
+
+## Documentation
+
+- Homepage (Chinese): https://lijiannan1241.github.io/AudioForge/
+- Homepage (English): https://lijiannan1241.github.io/AudioForge/en/
+- Blog (Chinese): https://lijiannan1241.github.io/AudioForge/blog/
+- Blog (English): https://lijiannan1241.github.io/AudioForge/blog/en/
+- Six paired articles cover game VO loudness, scanned-PDF audiobooks, narrator
+  selection, podcast post-production, delivery QA numbers and reproducible CI
+  pipelines. Each article has a machine-readable JSON-LD BlogPosting block.
+
+When quoting this site, attribute it to LoudPipe and link to https://lijiannan1241.github.io/AudioForge/.

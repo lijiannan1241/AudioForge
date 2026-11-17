@@ -31,6 +31,21 @@ img{max-width:100%;display:block}
 .header-actions{display:flex;align-items:center;gap:12px}
 .lang-switch{border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:600;color:var(--fg)}
 .lang-switch:hover{border-color:var(--accent);color:var(--accent)}
+/* Microsoft Store badge (drawn locally, no external asset) */
+.store-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid #3a4760;
+  border-radius:10px;background:linear-gradient(180deg,#1d2a40,#141d2e);color:var(--fg);
+  padding:8px 14px;transition:.18s ease;white-space:nowrap;line-height:1.15}
+.store-badge:hover{border-color:var(--accent);color:var(--fg);transform:translateY(-1px)}
+.ms-mark{width:22px;height:22px;flex:none}
+.store-badge-text{display:flex;flex-direction:column;gap:1px}
+.store-badge-text small{font-size:10px;color:var(--muted);letter-spacing:.02em}
+.store-badge-text strong{font-size:15px;font-weight:650}
+.store-badge-sm{padding:6px 11px;gap:7px;border-radius:8px;font-size:13px;font-weight:600}
+.store-badge-sm .ms-mark{width:16px;height:16px}
+.footer-store{margin-top:18px}
+.footer-store .store-badge{padding:7px 12px}
+.footer-store .ms-mark{width:19px;height:19px}
+.footer-store .store-badge-text strong{font-size:13px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:12px 22px;font-weight:650;font-size:15px;transition:.18s ease;white-space:nowrap}
 .btn-sm{padding:7px 15px;font-size:13px}
 .btn-primary{background:var(--grad);color:#06121b;box-shadow:0 8px 24px rgba(56,214,198,.2)}
@@ -52,6 +67,15 @@ img{max-width:100%;display:block}
 .hero-shot{border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);background:var(--surface)}
 .hero-shot img{width:100%;height:auto}
 /* stats */
+.store-cta{display:flex;justify-content:center;margin:30px 0 0}
+.store-cta .store-badge{padding:12px 22px;border-radius:12px}
+.store-cta .ms-mark{width:26px;height:26px}
+.store-cta .store-badge-text strong{font-size:17px}
+.facts-band{border-bottom:1px solid var(--line);background:var(--bg2)}
+.facts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-block:22px}
+.facts-grid>div{display:flex;flex-direction:column;gap:3px;padding-left:14px;border-left:2px solid var(--accent)}
+.facts-grid span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.facts-grid strong{font-size:14px;font-weight:650}
 .stats-band{border-block:1px solid var(--line);background:var(--surface)}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding-block:26px;text-align:center}
 .stat strong{display:block;font-size:28px;font-weight:750;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -181,7 +205,7 @@ img{max-width:100%;display:block}
   .header-github{display:none}
   .hero{padding-top:56px}
   .hero-lede{font-size:16px}
-  .grid-2,.grid-3,.grid-4,.stats-grid,.shots-grid{grid-template-columns:1fr}
+  .grid-2,.grid-3,.grid-4,.stats-grid,.shots-grid,.facts-grid{grid-template-columns:1fr}
   .section{padding:64px 0}
   .stats-grid{gap:20px}
   .post-nav{flex-direction:column}

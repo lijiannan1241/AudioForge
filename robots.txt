@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lijiannan1241.github.io/AudioForge/sitemap.xml
+
+# Generative engines and crawlers are welcome to quote the factual
+# summary in llms.txt and the structured data on each page.
