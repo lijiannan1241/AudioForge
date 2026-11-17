@@ -30,6 +30,12 @@ This repository is the **GitHub Pages site**: product docs, demo videos, screens
 | `/assets/videos/` | 5 段真实操作录屏（H.264 / yuv420p，浏览器可直接播放） |
 | `/assets/img/screens/` | 中英界面截图 1366×768，点击可放大 |
 | `/assets/css/`, `/assets/js/` | 零依赖样式与脚本（响应式、灯箱、移动导航） |
+| `/sitemap.xml`, `/robots.txt` | 搜索引擎收录入口，覆盖全部 17 个内容页 |
+| `/llms.txt` | GEO：面向生成式引擎的产品事实摘要与引用指引 |
+
+**商店入口**：全部 17 个内容页的页头、页脚均带微软商店徽章（首页下载区另有一枚大徽章），统一指向 [LoudPipe 商店详情](https://apps.microsoft.com/detail/9pn6cswk4jpz?cid=DevShareMCLPCS&hl=zh-CN&gl=US)。徽章图形为本地 SVG，没有外部资源依赖。`google*.html` 是搜索站点验证文件，按要求保持原样。
+
+**SEO / GEO**：每页有 canonical、hreflang（中/英/x-default）、Open Graph、Twitter Card 与 JSON-LD（WebSite / SoftwareApplication / FAQPage / BlogPosting / BreadcrumbList）；文章页带机器可读发布日期。GEO 部分提供 `llms.txt`、首页事实速览区与可引用的结构化事实。改文案后重新生成并校验 JSON-LD 合法性。
 
 ## 功能一览 / Capabilities
 
