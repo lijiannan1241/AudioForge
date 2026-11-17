@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seven Numbers I Check Before Shipping an Audiobook — LoudPipe</title>
+<meta name="description" content="Not &quot;it sounds fine&quot; — &quot;all seven pass&quot;. Ten minutes before delivery saves a full redo.">
+<meta property="og:title" content="Seven Numbers I Check Before Shipping an Audiobook — LoudPipe">
+<meta property="og:description" content="Not &quot;it sounds fine&quot; — &quot;all seven pass&quot;. Ten minutes before delivery saves a full redo.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../../#features">Features</a>
+      <a href="../../#demos">Demos</a>
+      <a href="../../#gallery">Screenshots</a>
+      <a href="../../blog/en/">Blog</a>
+      <a href="../../#download">Download</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../../blog/05.html" hreflang="zh-CN" title="中文">中文</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">QUALITY · LoudPipe</p>
+    <h1>Seven Numbers I Check Before Shipping an Audiobook</h1>
+    <p class="post-sub">Not &quot;it sounds fine&quot; — &quot;all seven pass&quot;. Ten minutes before delivery saves a full redo.</p>
+    <p class="post-meta">2026-11-17 · 490 words</p>
+    <p class="lang-inline">中文版 → <a href="../../blog/05.html">中文</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><p>An audiobook is expensive to redo: change one parameter and nine hours of synthesis may be gone. So delivery needs a checklist, not a listen-through.</p>
+<h2 id="s1">1. Overall loudness: -19 LUFS (±0.5)</h2>
+<p>Audiobooks usually target -19 LUFS, quieter than podcast (-16) because long listening sessions in a quiet room fatigue fast. Read the output LUFS column — and watch the <strong>spread</strong>, not just the individual values. A few files at -21 means the source dynamics were never handled.</p>
+<h2 id="s2">2. True peak: at or below -1 dBTP</h2>
+<p>MP3/AAC encoding overshoots. Master to -1 dBTP and the encoded file will not clip. Note this is true peak, not sample peak — they can differ by more than 1 dB, and sample peak will miss it.</p>
+<h2 id="s3">3. Clipped samples: 0</h2>
+<p>Anything non-zero means the waveform was flattened at the top, which sounds like distortion and cannot be repaired. This column does not need interpretation; it needs to be zero.</p>
+<h2 id="s4">4. DC offset: near zero</h2>
+<p>Offset pushes the waveform off centre, wasting headroom and producing clicks in some players. Common in older recordings and certain capture chains. The waveform view shows asymmetry immediately.</p>
+<h2 id="s5">5. Chapter length and rate outliers</h2>
+<p>A 47-minute chapter followed by a 3-minute one usually means a split or OCR error, not a short chapter. Look at character count, duration and status per chapter, plus the rate-outlier rule in the TTS report. A 3-second chapter should send you back to that page's OCR result.</p>
+<h2 id="s6">6. Silence ratio</h2>
+<p>Very high silence (say above 30%) implies blank pages, a table of contents, or broken paragraphs. The listener just waits for the next sentence. The TTS QA report lists it.</p>
+<h2 id="s7">7. Uncovered pronunciation</h2>
+<p>Abbreviations, model numbers, names — all-caps tokens and long digit strings are the two categories most likely to be read wrong. If the dictionary does not cover them, the engine invents a reading. The report lists both; fix the glossary and re-synthesize only the affected chapters (checkpointing makes that cheap).</p>
+<h2 id="s8">The delivery checklist</h2>
+<ul><li><strong>The M4B</strong> — AAC, chapter track, cover, title/author metadata;</li><li><strong>Chapter audio</strong> (optional) — one file per chapter, easier to re-edit;</li><li><strong>Reports</strong> — CSV and HTML, for the client and for your archive;</li><li><strong>Naming</strong> — sortable, e.g. <code>BookTitle_ch03_Title.m4b</code>. Not "final_v2_really".</li></ul>
+<h2 id="s9">One last thing</h2>
+<p>Play chapter one in a real player, and try to skip a chapter. A broken chapter track, a missing cover, no position memory — all of these are green in the report and only the listener finds them.</p>
+<p>Seven numbers passing does not make a good audiobook. One of them failing guarantees someone will hear it.</p>
+<p>---</p>
+<p><strong>LoudPipe</strong> is on the Microsoft Store: LUFS, true peak, clipping, DC offset, silence ratio and pronunciation warnings in one batch.</p>
+      <div class="post-end">— End of article —</div>
+      <nav class="post-nav"><a class="post-nav-item" href="04.html"><span>← Previous</span><strong>Podcast Post-Production: 40 Minutes Down to 4</strong></a><a class="post-nav-item next" href="06.html"><span>Next →</span><strong>A 500-File Batch Inside CI</strong></a></nav>
+      <p class="post-back"><a href="../../blog/en/">← Back to blog</a></p>
+    </div>
+    <aside class="post-toc"><h3>On this page</h3><ol><li><a href="#s1">1. Overall loudness: -19 LUFS (±0.5)</a></li><li><a href="#s2">2. True peak: at or below -1 dBTP</a></li><li><a href="#s3">3. Clipped samples: 0</a></li><li><a href="#s4">4. DC offset: near zero</a></li><li><a href="#s5">5. Chapter length and rate outliers</a></li><li><a href="#s6">6. Silence ratio</a></li><li><a href="#s7">7. Uncovered pronunciation</a></li><li><a href="#s8">The delivery checklist</a></li><li><a href="#s9">One last thing</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">Batch audio processing and document-to-speech, built for Windows.</p>
+    </div>
+    <div class="footer-col">
+      <h3>Product</h3>
+      <a href="../../#features">Features</a>
+      <a href="../../#demos">Demos</a>
+      <a href="../../#download">Download</a>
+    </div>
+    <div class="footer-col">
+      <h3>Resources</h3>
+      <a href="../../blog/en/">Blog</a>
+      <a href="../../privacy.html">Privacy policy</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>Contact</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From a 300-Page Scan to a Chaptered Audiobook in Four Steps — LoudPipe</title>
+<meta name="description" content="Scanned books have no text layer — and they are often the ones that most need to be heard. OCR, chapter split, synthesis, muxing: skip one and the delivery shows it.">
+<meta property="og:title" content="From a 300-Page Scan to a Chaptered Audiobook in Four Steps — LoudPipe">
+<meta property="og:description" content="Scanned books have no text layer — and they are often the ones that most need to be heard. OCR, chapter split, synthesis, muxing: skip one and the delivery shows it.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../../#features">Features</a>
+      <a href="../../#demos">Demos</a>
+      <a href="../../#gallery">Screenshots</a>
+      <a href="../../blog/en/">Blog</a>
+      <a href="../../#download">Download</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../../blog/02.html" hreflang="zh-CN" title="中文">中文</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">AUDIOBOOKS · LoudPipe</p>
+    <h1>From a 300-Page Scan to a Chaptered Audiobook in Four Steps</h1>
+    <p class="post-sub">Scanned books have no text layer — and they are often the ones that most need to be heard. OCR, chapter split, synthesis, muxing: skip one and the delivery shows it.</p>
+    <p class="post-meta">2026-11-17 · 631 words</p>
+    <p class="lang-inline">中文版 → <a href="../../blog/02.html">中文</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><h2 id="s1">Why scans are the hard case</h2>
+<p>A retail ebook copies out cleanly. A scan is 300 images. Before anything can be read aloud, a machine has to see the letters, then decide where chapter one ends, then speak.</p>
+<p>Every shortcut on that chain shows up in the result: dropped characters, one nine-hour file with no chapters, or a run that restarts from page one after a network hiccup.</p>
+<h2 id="s2">Step 1 — OCR, without redoing the whole book</h2>
+<p>LoudPipe uses the Windows OCR engine: offline, no model download, just the system language pack. Three details make it usable:</p>
+<ul><li><strong>Page-by-page decisions on mixed PDFs</strong> — pages with a text layer use it; only image pages are OCR'd. Many "scanned" books are actually mixed, and OCR-ing everything is pure waste.</li><li><strong>Page-level cache</strong> — each page is written as it completes. Crash at page 187 and the rerun starts at 188. This is the difference between a tolerable long job and an unbearable one.</li><li><strong>Layout recovery</strong> — paragraphs split by adaptive line spacing, page numbers at the margins removed, headings kept as their own paragraphs. Otherwise the narrator reads the page numbers.</li></ul>
+<p>Changing the language or DPI invalidates the cache automatically.</p>
+<h2 id="s3">Step 2 — Chapters, by order of trust</h2>
+<p>Bookmarks first, then heading patterns (Chapter N, Part One, Prologue), then a page-count fallback. Books with bookmarks are trivial; books with consistent headings are mostly covered by regex; only the rest degrade to "one chapter every N pages".</p>
+<p>Spend ten minutes checking this. A wrong split wastes everything downstream.</p>
+<h2 id="s4">Step 3 — Synthesis that assumes it will be interrupted</h2>
+<p>A 300-page book takes a while, and dropping connections are normal. What matters is not top speed but recovery:</p>
+<ul><li><strong>Sentence-level chunks with checkpoints</strong> — finished chunks are recorded; failed chunks retry individually.</li><li><strong>A pronunciation dictionary</strong> — Wwise, LUFS, Nyquist, product names. Technical books are unlistenable without one. Regex rules plus a built-in glossary.</li><li><strong>Multi-role casting</strong> — regex routes different characters' lines to different voices and rates, synthesized group by group.</li></ul>
+<p>LoudPipe ships 318 voices across 70+ languages, all loaded at startup, so you audition before you commit instead of guessing from a name.</p>
+<h2 id="s5">Step 4 — Deliver one M4B, not a folder of WAVs</h2>
+<p>A WAV per chapter is a working format, not a delivery format. What you ship is one M4B that skips chapters, remembers position and carries cover art:</p>
+<ul><li>AAC audio plus a chapter track players can navigate;</li><li>adjustable gaps between chapters (400 ms by default) so chapters end instead of running together;</li><li>cover art and metadata (title, author) written in;</li><li>muxing done by the bundled ffmpeg — nothing for the user to install.</li></ul>
+<p>Chapters are not M4B-only, either: WAV <code>smpl/cue</code>, MP3 <code>CHAP</code>, FLAC/OGG Vorbis CHAPTER and QuickTime chapters for M4A/MP4 all write and read back, to the millisecond.</p>
+<h2 id="s6">Then actually listen</h2>
+<p>OCR and auto-splitting make mistakes. Before delivery, check three spots: the opening of chapter one, any chapter boundary, the last page. Look at the silence ratio — a 3-second "chapter" usually means a heading was OCR'd as body text.</p>
+<p>Turning a scan into an audiobook is not magic; it is a pipeline where every step leaves a way back. Get the cache, the checkpointing, the split rules and the chapter muxing right, and 300 pages is just a longer wait than 30.</p>
+<p>---</p>
+<p><strong>LoudPipe</strong> is on the Microsoft Store: OCR for scanned PDFs, per-chapter synthesis and one-click M4B, in a single window.</p>
+      <div class="post-end">— End of article —</div>
+      <nav class="post-nav"><a class="post-nav-item" href="01.html"><span>← Previous</span><strong>Why Your Game VO Always Sounds Off</strong></a><a class="post-nav-item next" href="03.html"><span>Next →</span><strong>Choosing One Voice Out of 318</strong></a></nav>
+      <p class="post-back"><a href="../../blog/en/">← Back to blog</a></p>
+    </div>
+    <aside class="post-toc"><h3>On this page</h3><ol><li><a href="#s1">Why scans are the hard case</a></li><li><a href="#s2">Step 1 — OCR, without redoing the whole book</a></li><li><a href="#s3">Step 2 — Chapters, by order of trust</a></li><li><a href="#s4">Step 3 — Synthesis that assumes it will be interrupted</a></li><li><a href="#s5">Step 4 — Deliver one M4B, not a folder of WAVs</a></li><li><a href="#s6">Then actually listen</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">Batch audio processing and document-to-speech, built for Windows.</p>
+    </div>
+    <div class="footer-col">
+      <h3>Product</h3>
+      <a href="../../#features">Features</a>
+      <a href="../../#demos">Demos</a>
+      <a href="../../#download">Download</a>
+    </div>
+    <div class="footer-col">
+      <h3>Resources</h3>
+      <a href="../../blog/en/">Blog</a>
+      <a href="../../privacy.html">Privacy policy</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>Contact</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

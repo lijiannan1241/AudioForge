@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Putting a 500-File Batch Into CI: A Reproducible Audio Delivery Pipeline — LoudPipe</title>
+<meta name="description" content="CLI, JSON presets and failure isolation mean no delivery depends on remembering what you clicked last time.">
+<meta property="og:title" content="Putting a 500-File Batch Into CI: A Reproducible Audio Delivery Pipeline — LoudPipe">
+<meta property="og:description" content="CLI, JSON presets and failure isolation mean no delivery depends on remembering what you clicked last time.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../../#features">Features</a>
+      <a href="../../#demos">Demos</a>
+      <a href="../../#gallery">Screenshots</a>
+      <a href="../../blog/en/">Blog</a>
+      <a href="../../#download">Download</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../../blog/06.html" hreflang="zh-CN" title="中文">中文</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">ENGINEERING · LoudPipe</p>
+    <h1>Putting a 500-File Batch Into CI: A Reproducible Audio Delivery Pipeline</h1>
+    <p class="post-sub">CLI, JSON presets and failure isolation mean no delivery depends on remembering what you clicked last time.</p>
+    <p class="post-meta">2026-11-17 · 722 words</p>
+    <p class="lang-inline">中文版 → <a href="../../blog/06.html">中文</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><p>The most underestimated cost of batch audio is not the processing. It is knowing <em>what settings were actually used</em>. The result from the GUI is good, but next week a different person, a different machine, or a rollback to the previous VO set arrives — and nobody can reconstruct the effect chain order and thresholds. Reproducibility is not a luxury for large teams. It is what makes a delivery verifiable, repeatable and auditable.</p>
+<h2 id="s1">Why "I can click it" is not enough</h2>
+<p>A GUI is for exploration: try a denoise amount, listen to the de-esser, settle on a loudness target. Once those decisions are made, they should be frozen into configuration, not left in someone's muscle memory.</p>
+<p>The familiar sentence is: "I think it was -18 LUFS... or was it -19?" followed by half an hour of scrolling through chat history. If the parameters live in a JSON preset, that half hour disappears, and a new teammate can check out the repo and produce exactly your output.</p>
+<h2 id="s2">What a complete command looks like</h2>
+<p>LoudPipe's CLI shares the same processing core as the GUI, so a CI run matches what you previewed locally:</p>
+<pre><code class="language-bash">loudpipe run \
+  --input  ./vo_raw \
+  --output ./vo_delivery \
+  --preset ./presets/game_vo.json \
+  --lufs -23 --true-peak -1 \
+  --format wav --sample-rate 48000 --channels 1 \
+  --report ./reports/vo_2026_11.json \
+  -j 8 --retries 2</code></pre>
+<p>Several things matter here: the input directory is traversed as a whole, so 500 files do not need 500 lines; loudness target and true-peak ceiling are explicit rather than defaulted; the report lands as JSON for later steps to read and assert on; worker count and retries are tunable so a build machine does not saturate the CPU for other jobs.</p>
+<h2 id="s3">Presets are configuration: write the effect chain as JSON</h2>
+<p>A preset stores order and parameters — denoise amount, de-ess frequency and depth, compressor threshold and ratio, three EQ bands, normalization target. Order is part of the configuration: denoise-then-compress and compress-then-denoise produce different files.</p>
+<p>Committing the preset to your repo adds version control to audio delivery. A change is one diff that can be reviewed and reverted. This matters in game projects, where art and audio assets for multiple versions coexist and an older VO pack may need to be delivered again.</p>
+<h2 id="s4">Failure isolation and resume</h2>
+<p>The worst thing in batch work is dying at 97% and starting over. LoudPipe treats each file as an independent task: a decode failure does not abort the batch, failed items are recorded separately, and a rerun only touches those files. Finished outputs stay untouched.</p>
+<p>Use this deliberately in CI: have the build script read the report and fail the pipeline on any nonzero failure count, then rerun in resume mode after fixing. Do not treat "mostly succeeded" as success — one silent file in a delivery is harder to catch than a total failure.</p>
+<h2 id="s5">The report is the acceptance sheet</h2>
+<p>Every batch writes CSV / JSON / HTML reports with per-file input and output LUFS, true peak, clipped samples, DC offset, duration and format, plus waveform and STFT spectrum images.</p>
+<p>They are not only for humans. CI can read the JSON and assert hard checks: output LUFS within ±0.5 of target, true peak at or below -1 dBTP, clipped samples all zero. Turning "sounds fine" into a few checks that fail is the step that brings audio into an automated workflow.</p>
+<h2 id="s6">Handing off to Wwise / FMOD</h2>
+<p>The engine does not want the "best sounding" file. It wants a consistent one: unified sample rate, bit depth and channel count; naming and folder layout that match project conventions; metadata preserved. LoudPipe aligns those at export, and the resulting WAV / MP3 / FLAC / M4A goes straight into the engine import pipeline. Chapter markers, essential for audiobooks, can also label multiple variants inside one delivery.</p>
+<h2 id="s7">Wrap-up</h2>
+<p>A reproducible pipeline does not need more tools. It needs the decisions you already got right, written down: presets in version control, parameters in the command line, acceptance in the report. Next delivery, you are not recalling what you clicked — you are running the same command again.</p>
+      <div class="post-end">— End of article —</div>
+      <nav class="post-nav"><a class="post-nav-item" href="05.html"><span>← Previous</span><strong>Seven Numbers I Check Before Shipping</strong></a></nav>
+      <p class="post-back"><a href="../../blog/en/">← Back to blog</a></p>
+    </div>
+    <aside class="post-toc"><h3>On this page</h3><ol><li><a href="#s1">Why &quot;I can click it&quot; is not enough</a></li><li><a href="#s2">What a complete command looks like</a></li><li><a href="#s3">Presets are configuration: write the effect chain as JSON</a></li><li><a href="#s4">Failure isolation and resume</a></li><li><a href="#s5">The report is the acceptance sheet</a></li><li><a href="#s6">Handing off to Wwise / FMOD</a></li><li><a href="#s7">Wrap-up</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">Batch audio processing and document-to-speech, built for Windows.</p>
+    </div>
+    <div class="footer-col">
+      <h3>Product</h3>
+      <a href="../../#features">Features</a>
+      <a href="../../#demos">Demos</a>
+      <a href="../../#download">Download</a>
+    </div>
+    <div class="footer-col">
+      <h3>Resources</h3>
+      <a href="../../blog/en/">Blog</a>
+      <a href="../../privacy.html">Privacy policy</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>Contact</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

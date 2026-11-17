@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>你的游戏语音为什么总被说&quot;忽大忽小&quot;？问题不在配音演员 — LoudPipe</title>
+<meta name="description" content="800 条 VO 进引擎后，QA 只说了两句话——&quot;有些听不清，有些炸麦&quot;。这跟演技无关，跟响度有关。">
+<meta property="og:title" content="你的游戏语音为什么总被说&quot;忽大忽小&quot;？问题不在配音演员 — LoudPipe">
+<meta property="og:description" content="800 条 VO 进引擎后，QA 只说了两句话——&quot;有些听不清，有些炸麦&quot;。这跟演技无关，跟响度有关。">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#gallery">界面截图</a>
+      <a href="../blog/">博客</a>
+      <a href="../#download">下载</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../blog/en/01.html" hreflang="en" title="EN">EN</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">游戏音频 · LoudPipe</p>
+    <h1>你的游戏语音为什么总被说&quot;忽大忽小&quot;？问题不在配音演员</h1>
+    <p class="post-sub">800 条 VO 进引擎后，QA 只说了两句话——&quot;有些听不清，有些炸麦&quot;。这跟演技无关，跟响度有关。</p>
+    <p class="post-meta">2026-11-17 · 约 1666 字符</p>
+    <p class="lang-inline">English version → <a href="../blog/en/01.html">English</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><h2 id="s1">先说结论</h2>
+<p>游戏 VO 的"忽大忽小"，九成不是录音问题，而是<strong>每条音频的响度没有被统一到同一个目标</strong>。人耳对响度的感知不是线性的：同样 -30 dBFS 峰值的两条语音，一条平均 -24 LUFS、一条 -17 LUFS，玩家会觉得后者"更清楚、更有情绪"，前者"像隔着一层布"。而到了爆炸、音乐一起进混音的段落，-17 LUFS 的那条又会被压得听不见。</p>
+<p>所以真正要控制的是三个数：<strong>平均响度（LUFS）、真峰值（dBTP）、以及它们在一批文件里的一致性</strong>。</p>
+<h2 id="s2">三次常见的翻车</h2>
+<p><strong>第一次：只看峰值。</strong> 把每条 VO 的峰值压到 -1 dBFS 就以为齐了。结果安静的情绪戏被拉得很响，喊叫的台词反而偏小——峰值只描述"最响的那一瞬间"，跟"整体听起来多响"是两件事。</p>
+<p><strong>第二次：拿压缩器硬压。</strong> 压缩确实能把动态压平，但它是"改变音色"的工具，不是"对齐响度"的工具。压得狠了，齿音和呼吸声被一起抬起来，配音演员的表演细节也没了。</p>
+<p><strong>第三次：一条一条手动调。</strong> 前 20 条很认真，第 200 条开始凭感觉，第 800 条已经只想赶紧交付。一致性就是在这一步丢掉的。</p>
+<h2 id="s3">正确的顺序：归一 → 限幅 → 统一规格</h2>
+<p>一条能交付的游戏 VO 管线，顺序是固定的：</p>
+<ol><li><strong>响度归一化</strong>：把每条音频的整体响度对齐到目标（游戏语音通常是 <strong>-23 LUFS</strong>，与 EBU R128 的广播口径一致）。</li><li><strong>真峰值限制</strong>：4 倍过采样检测真实峰值，卡在 <strong>-1 dBTP</strong>，给后续编码留 headroom。</li><li><strong>统一规格</strong>：采样率、位深、声道一次对齐，避免引擎里出现"这条是 44.1k 单声道、那条是 48k 立体声"的隐性麻烦。</li><li><strong>命名与目录</strong>：按 Wwise / FMOD 的层级生成路径，导入时不用再手工整理。</li></ol>
+<p>降噪、去齿音这类"改变音色"的处理应该放在归一<strong>之前</strong>——否则归一化会把刚压下去的尾巴又抬起来。</p>
+<h2 id="s4">用 LoudPipe 怎么做</h2>
+<p>在 LoudPipe 里，上面四步是一个预设：<code>game_vo_lufs</code>（-23 LUFS / -1 dBTP）。把整个 <code>vo/</code> 目录拖进窗口，点开始，剩下的交给批处理：</p>
+<ul><li><strong>实测误差 ≤0.1 LU</strong>，不是"差不多到了"，是每条都落在同一个窄带里；</li><li><strong>失败隔离</strong>：800 条里有一条损坏，其余 799 条照常完成，界面里点「重试失败」只补那一条；</li><li><strong>降噪去齿音可选</strong>：<code>game_vo_clean</code> 预设会做谱减降噪和 5–8 kHz 动态衰减，无噪声段、无齿音素材自动跳过，不啃表演细节；</li><li><strong>报告随批生成</strong>：每条文件的输入/输出 LUFS、真峰值、是否削波、处理耗时都写进 CSV / JSON / HTML，QA 质疑"这条为什么听着小"时，直接给数字；</li><li><strong>并发与重试</strong>：<code>-j 4 --retries 2</code>，GUI 设置页也能配，跑 800 条不用守着。</li></ul>
+<h2 id="s5">一个容易被忽略的细节</h2>
+<p>处理完之后，<strong>不要只看报告里的"成功"</strong>。挑三条听：一条最安静的、一条最吵的、一条齿音最多的。用波形和频谱看一眼——LoudPipe 的分带能量会把 sub / low / mid / presence / sibilance / air 六段能量和峰值频率列出来，齿音重不重、低频有没有隆隆，不用靠猜。</p>
+<p>响度这件事，做对了没人夸，做错了所有人都听得见。把三个数字管住，800 条也就只是一次批处理的事。</p>
+<p>---</p>
+<p><strong>LoudPipe</strong> 已经在 Microsoft Store 上架：批量响度、真峰值、降噪去齿音、文档转语音与有声书交付，一个窗口完成。</p>
+      <div class="post-end">— 全文完 —</div>
+      <nav class="post-nav"><span></span><a class="post-nav-item next" href="02.html"><span>下一篇 →</span><strong>300 页扫描书，怎么变成能跳章的有声书？</strong></a></nav>
+      <p class="post-back"><a href="../blog/">← 返回博客列表</a></p>
+    </div>
+    <aside class="post-toc"><h3>本文目录</h3><ol><li><a href="#s1">先说结论</a></li><li><a href="#s2">三次常见的翻车</a></li><li><a href="#s3">正确的顺序：归一 → 限幅 → 统一规格</a></li><li><a href="#s4">用 LoudPipe 怎么做</a></li><li><a href="#s5">一个容易被忽略的细节</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">批量音频处理与文档转有声书，为 Windows 而做。</p>
+    </div>
+    <div class="footer-col">
+      <h3>产品</h3>
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#download">下载</a>
+    </div>
+    <div class="footer-col">
+      <h3>资源</h3>
+      <a href="../blog/">博客</a>
+      <a href="../privacy.html">隐私政策</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>联系</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

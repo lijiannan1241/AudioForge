@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>把 500 个文件的批处理写进 CI：一条可复现的音频交付管线 — LoudPipe</title>
+<meta name="description" content="命令行、JSON 预设与失败隔离，让每次交付都不靠记忆重调参数。">
+<meta property="og:title" content="把 500 个文件的批处理写进 CI：一条可复现的音频交付管线 — LoudPipe">
+<meta property="og:description" content="命令行、JSON 预设与失败隔离，让每次交付都不靠记忆重调参数。">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#gallery">界面截图</a>
+      <a href="../blog/">博客</a>
+      <a href="../#download">下载</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../blog/en/06.html" hreflang="en" title="EN">EN</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">工程化 · LoudPipe</p>
+    <h1>把 500 个文件的批处理写进 CI：一条可复现的音频交付管线</h1>
+    <p class="post-sub">命令行、JSON 预设与失败隔离，让每次交付都不靠记忆重调参数。</p>
+    <p class="post-meta">2026-11-17 · 约 1767 字符</p>
+    <p class="lang-inline">English version → <a href="../blog/en/06.html">English</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><p>音频批处理最容易被低估的成本，不是处理本身，而是"这次到底用了什么参数"。界面上点出来的结果很好，但下周换个人、换台机器，或者项目要回滚到上一版 VO，没人能说清当时的效果链顺序和阈值。可复现性不是大型团队的奢侈品——它决定了一次交付能不能被验证、被重做、被审计。</p>
+<h2 id="s1">为什么"能点出来"还不够</h2>
+<p>图形界面的价值是探索：试一个降噪量、听一下去齿音的强度、确认响度目标。这些决定一旦做出来，就应该被固化成配置，而不是留在某个人的操作记忆里。</p>
+<p>一个典型的声音是："我记得上次是 -18 LUFS……还是 -19？"然后是半小时的翻聊天记录。如果参数在 JSON 预设里，这半小时可以省掉，而且新同事拉下仓库就能跑出和你完全一样的输出。</p>
+<h2 id="s2">一次完整命令长什么样</h2>
+<p>LoudPipe 的命令行版与图形界面共用同一套处理内核，所以 CI 里跑出来的结果和本地预览一致：</p>
+<pre><code class="language-bash">loudpipe run \
+  --input  ./vo_raw \
+  --output ./vo_delivery \
+  --preset ./presets/game_vo.json \
+  --lufs -23 --true-peak -1 \
+  --format wav --sample-rate 48000 --channels 1 \
+  --report ./reports/vo_2026_11.json \
+  -j 8 --retries 2</code></pre>
+<p>这条命令做了几件在 CI 里特别重要的事：输入目录整体遍历，不需要为 500 个文件各写一行；响度目标和真峰值上限显式写在命令里，不依赖默认值；报告落盘成 JSON，可以被后续步骤读取和断言；并发数与重试次数可调，跑在构建机上不会把 CPU 占满到影响其他任务。</p>
+<h2 id="s3">预设即配置：把效果链写进 JSON</h2>
+<p>预设里保存的是顺序和参数——降噪量、去齿音频点与强度、压缩阈值与比率、EQ 三段、归一目标。顺序本身也是配置的一部分：先降噪再压缩，和先压缩再降噪，输出完全不同。</p>
+<p>把预设文件提交进代码仓库，就等于给音频交付加了一层版本控制。改动有一行 diff，评审时能看见，回滚时也能照着恢复。这一点在游戏项目里尤其关键：美术和音频资源往往跨多个版本共存，旧的 VO 包可能还要再交付一次。</p>
+<h2 id="s4">失败隔离与断点续传</h2>
+<p>批处理最怕的是"跑到最后 3% 挂了，只能从头再来"。LoudPipe 把每个文件当作独立任务：一个文件解码失败不会中断整批，失败项单独记录；重跑时只补失败的文件，已完成的产物不动。</p>
+<p>这个行为在 CI 里要显式利用：让构建脚本在报告里检查失败数，非零就让流水线失败，修复后再用续传模式重跑。不要把"大部分成功"当成成功——交付物里混一个静音文件，比整批失败更难被发现。</p>
+<h2 id="s5">报告就是验收单</h2>
+<p>每批产出的 CSV / JSON / HTML 报告里，有每个文件的输入与输出 LUFS、真峰值、削波样本、DC 偏移、时长与格式信息，以及波形和 STFT 频谱图。</p>
+<p>它们不只是给人看的：CI 可以读 JSON 做硬断言——输出 LUFS 是否落在目标 ±0.5 内、真峰值是否不高于 -1 dBTP、削波样本是否全为 0。把主观的"听起来还行"变成几条会失败的检查，是把音频纳入自动化流程的关键一步。</p>
+<h2 id="s6">与 Wwise / FMOD 的衔接</h2>
+<p>引擎侧需要的往往不是"最好听"的文件，而是"规格一致"的文件：统一采样率、位深、声道数，命名和目录结构与工程约定一致，元数据不丢。LoudPipe 在导出阶段把采样率、位深、声道和容器格式一次对齐，写出的 WAV / MP3 / FLAC / M4A 可以直接进引擎的导入管线。章节标记对有声书是跳章，对游戏音频则可以作为同一次交付里的多版本对照。</p>
+<h2 id="s7">小结</h2>
+<p>可复现管线不要求更复杂的工具，只要求把已经做对的决定写下来：预设进版本库，参数进命令行，验收进报告。下次交付时，你要做的不是回忆上次怎么调的，而是把同一条命令再跑一遍。</p>
+      <div class="post-end">— 全文完 —</div>
+      <nav class="post-nav"><a class="post-nav-item" href="05.html"><span>← 上一篇</span><strong>有声书交付前，我必查的 7 个数字</strong></a></nav>
+      <p class="post-back"><a href="../blog/">← 返回博客列表</a></p>
+    </div>
+    <aside class="post-toc"><h3>本文目录</h3><ol><li><a href="#s1">为什么&quot;能点出来&quot;还不够</a></li><li><a href="#s2">一次完整命令长什么样</a></li><li><a href="#s3">预设即配置：把效果链写进 JSON</a></li><li><a href="#s4">失败隔离与断点续传</a></li><li><a href="#s5">报告就是验收单</a></li><li><a href="#s6">与 Wwise / FMOD 的衔接</a></li><li><a href="#s7">小结</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">批量音频处理与文档转有声书，为 Windows 而做。</p>
+    </div>
+    <div class="footer-col">
+      <h3>产品</h3>
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#download">下载</a>
+    </div>
+    <div class="footer-col">
+      <h3>资源</h3>
+      <a href="../blog/">博客</a>
+      <a href="../privacy.html">隐私政策</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>联系</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

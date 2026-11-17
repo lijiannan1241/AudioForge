@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>把播客后期从 40 分钟压到 4 分钟：一条可复现的管线 — LoudPipe</title>
+<meta name="description" content="每期节目都重复同一套 EQ、降噪、响度——这不是创作，是流水线。把它写成预设，剩下的时间用来剪内容。">
+<meta property="og:title" content="把播客后期从 40 分钟压到 4 分钟：一条可复现的管线 — LoudPipe">
+<meta property="og:description" content="每期节目都重复同一套 EQ、降噪、响度——这不是创作，是流水线。把它写成预设，剩下的时间用来剪内容。">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#gallery">界面截图</a>
+      <a href="../blog/">博客</a>
+      <a href="../#download">下载</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../blog/en/04.html" hreflang="en" title="EN">EN</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">播客 · LoudPipe</p>
+    <h1>把播客后期从 40 分钟压到 4 分钟：一条可复现的管线</h1>
+    <p class="post-sub">每期节目都重复同一套 EQ、降噪、响度——这不是创作，是流水线。把它写成预设，剩下的时间用来剪内容。</p>
+    <p class="post-meta">2026-11-17 · 约 1775 字符</p>
+    <p class="lang-inline">English version → <a href="../blog/en/04.html">English</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><h2 id="s1">40 分钟都花在哪了</h2>
+<p>一期 60 分钟的播客，后期通常是这样耗掉的：降噪 5 分钟（还要试参数）、去齿音 3 分钟、EQ 5 分钟、压缩 3 分钟、响度归一 5 分钟、导出与检查 10 分钟，中间穿插"这条好像比上期响"的反复确认。</p>
+<p>真正的问题不是每一步慢，而是<strong>每次都要重新决定一遍参数</strong>。凭耳朵调参数，今天 -18 dB 降噪、明天 -12 dB，节目听起来就会一期一个样。</p>
+<h2 id="s2">一条管线的固定顺序</h2>
+<p>顺序比参数重要。播客的推荐链路是：</p>
+<ol><li><strong>降噪</strong>（谱减，约 12 dB）：先把房间噪声压掉，否则后面的压缩会把它一起抬起来；</li><li><strong>去齿音</strong>（5–8 kHz 动态衰减，约 10 dB）：齿音在压缩之后会更刺，所以放在前面；</li><li><strong>压缩</strong>（阈值 -18 dB、比率 3:1）：把动态收一点，通勤场景才听得清；</li><li><strong>三段 EQ</strong>：低频浑浊就减 100–200 Hz，人声清晰度靠 3–5 kHz 轻抬，别超过 +2 dB；</li><li><strong>响度归一（-16 LUFS）+ 真峰值限制（-1 dBTP）</strong>：这是交付口径，必须放在最后，否则前面任何一步都会破坏它；</li><li><strong>转格式 + 写章节</strong>：MP3 或 M4A，顺带把"开场 / 正题 / 结尾"写成章节标记。</li></ol>
+<p>注意第 5 步为什么必须在最后：如果你先归一再加 EQ，EQ 抬了 2 dB，最终响度就偏了 2 dB，前面白做。</p>
+<h2 id="s3">把它存成预设，然后只管拖文件</h2>
+<p>在 LoudPipe 里，上面六步存成一个 JSON 预设（比如 <code>podcast_master</code>），以后每期只做三件事：</p>
+<ul><li>把录音拖进窗口；</li><li>选预设、选格式，点开始；</li><li>等报告。</li></ul>
+<p>真正省时间的是这几个工程化细节：</p>
+<ul><li><strong>并发</strong>：<code>-j 4</code>，一期拆成多个片段时同时跑；</li><li><strong>重试</strong>：<code>--retries 2</code>，网络盘抖一下不用整个重来；</li><li><strong>失败隔离</strong>：某个片段坏了，其余照常出片，只重试坏的；</li><li><strong>命名模板</strong>：输出自动是 <code>EP042_seg01.mp3</code> 这种规范名，不用手工改名；</li><li><strong>章节标记</strong>：<code>--marker intro=0 --marker topic=72.5</code>，MP3 写 <code>CHAP</code>、M4A 写 QuickTime 章节，播客客户端能跳段；</li><li><strong>报告</strong>：每期的输入/输出 LUFS、真峰值、处理耗时都落成 CSV / JSON / HTML，存档备查。</li></ul>
+<p>命令行同样一条：</p>
+<pre><code class="language-bash">loudpipe run -p podcast_master -i ./EP042 -o ./out --format mp3 \
+    --denoise 12 --deess 10 -j 4 --retries 2 \
+    --marker intro=0 --marker topic=72.5</code></pre>
+<h2 id="s4">"一键"不等于"不用听"</h2>
+<p>必须说清楚：预设保证的是<strong>一致性</strong>，不是"好听"。每期仍然要听三处——开头 30 秒（判断噪声底）、中间一段大笑或大声说话（判断压缩是否过头）、结尾（判断有没有被截断）。</p>
+<p>一致性带来的收益是隐性的：听众不会说"这期做得真好"，但连续听十期不觉得累，就是它起作用了。反过来，响度忽大忽小的节目，听众会在第 3 期悄悄退订，而你永远不知道原因。</p>
+<h2 id="s5">顺带解决的两件事</h2>
+<p><strong>音量小的嘉宾</strong>：批处理按文件归一，不用为每个人单独调增益。</p>
+<p><strong>远程录音的底噪</strong>：先用一段纯噪声学习 profile（<code>loudpipe noise-profile</code>），再套到整期，比固定参数稳。</p>
+<p>把 40 分钟压到 4 分钟，不是把标准降低，而是把"每次重新决定"变成"一次决定、长期执行"。省下的 36 分钟，够你把开场重写三遍。</p>
+<p>---</p>
+<p><strong>LoudPipe</strong> 已在 Microsoft Store 上架：降噪、去齿音、EQ、压缩、-16 LUFS 归一、章节标记，一次批处理完成。</p>
+      <div class="post-end">— 全文完 —</div>
+      <nav class="post-nav"><a class="post-nav-item" href="03.html"><span>← 上一篇</span><strong>318 个声音里怎么选一个？</strong></a><a class="post-nav-item next" href="05.html"><span>下一篇 →</span><strong>有声书交付前，我必查的 7 个数字</strong></a></nav>
+      <p class="post-back"><a href="../blog/">← 返回博客列表</a></p>
+    </div>
+    <aside class="post-toc"><h3>本文目录</h3><ol><li><a href="#s1">40 分钟都花在哪了</a></li><li><a href="#s2">一条管线的固定顺序</a></li><li><a href="#s3">把它存成预设，然后只管拖文件</a></li><li><a href="#s4">&quot;一键&quot;不等于&quot;不用听&quot;</a></li><li><a href="#s5">顺带解决的两件事</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">批量音频处理与文档转有声书，为 Windows 而做。</p>
+    </div>
+    <div class="footer-col">
+      <h3>产品</h3>
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#download">下载</a>
+    </div>
+    <div class="footer-col">
+      <h3>资源</h3>
+      <a href="../blog/">博客</a>
+      <a href="../privacy.html">隐私政策</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>联系</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

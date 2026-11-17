@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Podcast Post-Production: 40 Minutes Down to 4 — LoudPipe</title>
+<meta name="description" content="Every episode repeats the same denoise, EQ and loudness pass. That is not craft, it is a pipeline. Write it as a preset and spend the saved time on the edit.">
+<meta property="og:title" content="Podcast Post-Production: 40 Minutes Down to 4 — LoudPipe">
+<meta property="og:description" content="Every episode repeats the same denoise, EQ and loudness pass. That is not craft, it is a pipeline. Write it as a preset and spend the saved time on the edit.">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../../#features">Features</a>
+      <a href="../../#demos">Demos</a>
+      <a href="../../#gallery">Screenshots</a>
+      <a href="../../blog/en/">Blog</a>
+      <a href="../../#download">Download</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../../blog/04.html" hreflang="zh-CN" title="中文">中文</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">PODCAST · LoudPipe</p>
+    <h1>Podcast Post-Production: 40 Minutes Down to 4</h1>
+    <p class="post-sub">Every episode repeats the same denoise, EQ and loudness pass. That is not craft, it is a pipeline. Write it as a preset and spend the saved time on the edit.</p>
+    <p class="post-meta">2026-11-17 · 603 words</p>
+    <p class="lang-inline">中文版 → <a href="../../blog/04.html">中文</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><h2 id="s1">Where the forty minutes go</h2>
+<p>A 60-minute episode typically burns: 5 minutes on denoise (plus parameter guessing), 3 on de-essing, 5 on EQ, 3 on compression, 5 on loudness normalization, 10 on export and checks — with "does this sound louder than last week?" sprinkled in between.</p>
+<p>The slow part is not any single step. It is having to <strong>decide every parameter again, by ear, every time</strong>. Yesterday -18 dB denoise, today -12 dB, and now the show sounds like a different show each week.</p>
+<h2 id="s2">A fixed order matters more than the settings</h2>
+<ol><li><strong>Denoise</strong> (spectral, ~12 dB) — remove room noise first, or the compressor lifts it along with the voice;</li><li><strong>De-ess</strong> (dynamic 5–8 kHz, ~10 dB) — sibilance gets harsher after compression, so it goes before it;</li><li><strong>Compression</strong> (threshold -18 dB, ratio 3:1) — tame dynamics for commuting listeners;</li><li><strong>Three-band EQ</strong> — cut 100–200 Hz for mud, lift 3–5 kHz for intelligibility, never more than +2 dB;</li><li><strong>Loudness normalization (-16 LUFS) + true-peak limiting (-1 dBTP)</strong> — the delivery spec, last;</li><li><strong>Format conversion + chapter markers</strong> — MP3 or M4A, with intro/topic/outro marked.</li></ol>
+<p>Step 5 must be last for a simple reason: normalize first and then add +2 dB of EQ, and your final loudness is 2 dB off. Everything upstream was wasted.</p>
+<h2 id="s3">Save it as a preset, then just drop files</h2>
+<p>In LoudPipe those six steps are one JSON preset (<code>podcast_master</code>). Each episode becomes three actions: drop the recording, pick the preset and format, press start. Then read the report.</p>
+<p>What actually saves the time is the production plumbing:</p>
+<ul><li><strong>Concurrency</strong> — <code>-j 4</code> when an episode arrives as several segments;</li><li><strong>Retries</strong> — <code>--retries 2</code>, so a flaky network share does not restart the whole run;</li><li><strong>Failure isolation</strong> — one bad segment, the rest still ship; retry only the failure;</li><li><strong>Naming templates</strong> — output lands as <code>EP042_seg01.mp3</code>, no manual renaming;</li><li><strong>Chapter markers</strong> — <code>--marker intro=0 --marker topic=72.5</code> writes MP3 <code>CHAP</code> or QuickTime chapters, so clients can skip;</li><li><strong>Reports</strong> — input/output LUFS, true peak and timing per file, as CSV / JSON / HTML, archived per episode.</li></ul>
+<p>The same run from the CLI:</p>
+<pre><code class="language-bash">loudpipe run -p podcast_master -i ./EP042 -o ./out --format mp3 \
+    --denoise 12 --deess 10 -j 4 --retries 2 \
+    --marker intro=0 --marker topic=72.5</code></pre>
+<h2 id="s4">"One click" does not mean "no listening"</h2>
+<p>A preset guarantees <strong>consistency</strong>, not magic. Still check three spots: the first 30 seconds (noise floor), a loud laugh or shout mid-episode (over-compression), and the ending (truncation).</p>
+<p>The payoff is invisible: nobody says "great post this week", but ten episodes in a row that never tire the ear is the preset working. A show whose loudness drifts loses listeners around episode three, and you never learn why.</p>
+<h2 id="s5">Two problems it also solves</h2>
+<p><strong>Quiet guests.</strong> Per-file normalization means no manual gain per person.</p>
+<p><strong>Noisy remote recordings.</strong> Learn a profile from a room-tone sample (<code>loudpipe noise-profile</code>) and apply it to the whole episode — steadier than fixed settings.</p>
+<p>Forty minutes to four is not a lower standard. It is deciding once instead of deciding every week. The thirty-six minutes you get back are enough to rewrite the cold open three times.</p>
+<p>---</p>
+<p><strong>LoudPipe</strong> is on the Microsoft Store: denoise, de-ess, EQ, compression, -16 LUFS normalization and chapter markers in one batch.</p>
+      <div class="post-end">— End of article —</div>
+      <nav class="post-nav"><a class="post-nav-item" href="03.html"><span>← Previous</span><strong>Choosing One Voice Out of 318</strong></a><a class="post-nav-item next" href="05.html"><span>Next →</span><strong>Seven Numbers I Check Before Shipping</strong></a></nav>
+      <p class="post-back"><a href="../../blog/en/">← Back to blog</a></p>
+    </div>
+    <aside class="post-toc"><h3>On this page</h3><ol><li><a href="#s1">Where the forty minutes go</a></li><li><a href="#s2">A fixed order matters more than the settings</a></li><li><a href="#s3">Save it as a preset, then just drop files</a></li><li><a href="#s4">&quot;One click&quot; does not mean &quot;no listening&quot;</a></li><li><a href="#s5">Two problems it also solves</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">Batch audio processing and document-to-speech, built for Windows.</p>
+    </div>
+    <div class="footer-col">
+      <h3>Product</h3>
+      <a href="../../#features">Features</a>
+      <a href="../../#demos">Demos</a>
+      <a href="../../#download">Download</a>
+    </div>
+    <div class="footer-col">
+      <h3>Resources</h3>
+      <a href="../../blog/en/">Blog</a>
+      <a href="../../privacy.html">Privacy policy</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>Contact</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

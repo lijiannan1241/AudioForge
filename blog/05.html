@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有声书交付前，我必查的 7 个数字 — LoudPipe</title>
+<meta name="description" content="不是&quot;听起来还行&quot;，而是&quot;这七个指标都合格&quot;。交付前花十分钟，能省掉一次返工。">
+<meta property="og:title" content="有声书交付前，我必查的 7 个数字 — LoudPipe">
+<meta property="og:description" content="不是&quot;听起来还行&quot;，而是&quot;这七个指标都合格&quot;。交付前花十分钟，能省掉一次返工。">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#gallery">界面截图</a>
+      <a href="../blog/">博客</a>
+      <a href="../#download">下载</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../blog/en/05.html" hreflang="en" title="EN">EN</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">质量控制 · LoudPipe</p>
+    <h1>有声书交付前，我必查的 7 个数字</h1>
+    <p class="post-sub">不是&quot;听起来还行&quot;，而是&quot;这七个指标都合格&quot;。交付前花十分钟，能省掉一次返工。</p>
+    <p class="post-meta">2026-11-17 · 约 1343 字符</p>
+    <p class="lang-inline">English version → <a href="../blog/en/05.html">English</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><p>有声书的返工成本极高：改一个参数，可能意味着九小时的合成白跑。所以交付前必须有一张检查表——不是凭感觉听一遍，而是看七个数字。</p>
+<h2 id="s1">1. 整体响度：-19 LUFS（±0.5）</h2>
+<p>有声书的目标通常定在 -19 LUFS，比播客（-16）留更多余量，因为在安静环境里长时间收听，过响会疲劳。</p>
+<p>看哪里：批处理报告里的「输出 LUFS」列。要看的不是单条是否合格，而是<strong>整批的离散度</strong>——如果有几条落在 -21，说明底稿本身的动态差异没被处理好。</p>
+<h2 id="s2">2. 真峰值：不高于 -1 dBTP</h2>
+<p>MP3/AAC 编码会带来过冲，母带阶段卡在 -1 dBTP，编码后才不会削顶。</p>
+<p>看哪里：报告的「真峰值(dB)」列。注意这里是 dBTP（真峰值），不是采样峰值——两者能差 1 dB 以上，用采样峰值判断会漏。</p>
+<h2 id="s3">3. 削波样本数：0</h2>
+<p>任何非零都意味着波形顶部被削平了，听感上是"破"。削波是不可逆的，只能回退源头重做。</p>
+<p>看哪里：报告的「削波样本」列。这一列不需要理解，只需要等于 0。</p>
+<h2 id="s4">4. DC 偏移：接近 0</h2>
+<p>直流偏移会让波形整体偏离中线，浪费动态余量，某些播放器还会产生咔哒声。老录音、某些声卡采集的文件尤其常见。</p>
+<p>看哪里：报告列 + 波形图。波形明显不对称就该处理。</p>
+<h2 id="s5">5. 章节时长与语速离群</h2>
+<p>一章 47 分钟、下一章 3 分钟，很可能不是作者写得短，而是分章或 OCR 出了问题。</p>
+<p>看哪里：章节列表的「字符数 / 时长 / 状态」，以及 TTS 报告里的语速离群规则。发现 3 秒的章节，先回去看那一页的识别结果。</p>
+<h2 id="s6">6. 静音占比</h2>
+<p>静音占比过高（比如超过 30%），说明底稿里有大量空白页、目录页、或者断裂的段落。听众的实际体验是"一直在等下一句"。</p>
+<p>看哪里：TTS 专项 QA 报告。</p>
+<h2 id="s7">7. 未被词典覆盖的发音</h2>
+<p>缩写、型号、人名——全大写缩写和长数字串是最容易念错的两类。词典没覆盖到，机器就会按默认规则硬念。</p>
+<p>看哪里：TTS 报告会列出未被发音词典覆盖的全大写缩写与长数字串。补完词典，重合成受影响的那几章即可（断点续传只补改动块）。</p>
+<h2 id="s8">附：交付物清单</h2>
+<ul><li><strong>M4B 主文件</strong>：AAC、章节轨、封面、书名/作者元数据齐全；</li><li><strong>章节音频</strong>（可选）：一章一个文件，方便二次剪辑；</li><li><strong>报告</strong>：CSV + HTML 各一份，给客户或存档；</li><li><strong>命名规范</strong>：<code>书名_章节号_标题.m4b</code> 这类可排序的名字，别用"最终版2真的最终"。</li></ul>
+<h2 id="s9">最后一件小事</h2>
+<p>用播放器<strong>真的听一遍第一章</strong>，并且试着跳一次章。跳章失败、封面不显示、进度不记忆——这些问题在报告里全是绿的，只有 listener 会遇到。</p>
+<p>七个数字都对，不代表作品好听；但七个数字里有任何一个不对，就一定会有听众听出来。</p>
+<p>---</p>
+<p><strong>LoudPipe</strong> 已在 Microsoft Store 上架：LUFS、真峰值、削波、DC 偏移、静音占比、发音异常，一次批处理全查。</p>
+      <div class="post-end">— 全文完 —</div>
+      <nav class="post-nav"><a class="post-nav-item" href="04.html"><span>← 上一篇</span><strong>把播客后期从 40 分钟压到 4 分钟</strong></a><a class="post-nav-item next" href="06.html"><span>下一篇 →</span><strong>把 500 个文件的批处理写进 CI</strong></a></nav>
+      <p class="post-back"><a href="../blog/">← 返回博客列表</a></p>
+    </div>
+    <aside class="post-toc"><h3>本文目录</h3><ol><li><a href="#s1">1. 整体响度：-19 LUFS（±0.5）</a></li><li><a href="#s2">2. 真峰值：不高于 -1 dBTP</a></li><li><a href="#s3">3. 削波样本数：0</a></li><li><a href="#s4">4. DC 偏移：接近 0</a></li><li><a href="#s5">5. 章节时长与语速离群</a></li><li><a href="#s6">6. 静音占比</a></li><li><a href="#s7">7. 未被词典覆盖的发音</a></li><li><a href="#s8">附：交付物清单</a></li><li><a href="#s9">最后一件小事</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">批量音频处理与文档转有声书，为 Windows 而做。</p>
+    </div>
+    <div class="footer-col">
+      <h3>产品</h3>
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#download">下载</a>
+    </div>
+    <div class="footer-col">
+      <h3>资源</h3>
+      <a href="../blog/">博客</a>
+      <a href="../privacy.html">隐私政策</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>联系</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

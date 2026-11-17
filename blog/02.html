@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>300 页扫描书，怎么变成&quot;能跳章&quot;的有声书？ — LoudPipe</title>
+<meta name="description" content="扫描件没有文本层，却往往是最需要被听见的那本书。OCR、分章、合成、封装，四步缺一不可。">
+<meta property="og:title" content="300 页扫描书，怎么变成&quot;能跳章&quot;的有声书？ — LoudPipe">
+<meta property="og:description" content="扫描件没有文本层，却往往是最需要被听见的那本书。OCR、分章、合成、封装，四步缺一不可。">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="post-page">
+<a class="skip" href="#main">跳到正文</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../" aria-label="LoudPipe home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>LoudPipe</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#gallery">界面截图</a>
+      <a href="../blog/">博客</a>
+      <a href="../#download">下载</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-switch" href="../blog/en/02.html" hreflang="en" title="EN">EN</a>
+      <a class="btn btn-sm btn-ghost header-github" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+<article class="post">
+  <header class="post-head"><div class="container narrow">
+    <p class="kicker">有声书 · LoudPipe</p>
+    <h1>300 页扫描书，怎么变成&quot;能跳章&quot;的有声书？</h1>
+    <p class="post-sub">扫描件没有文本层，却往往是最需要被听见的那本书。OCR、分章、合成、封装，四步缺一不可。</p>
+    <p class="post-meta">2026-11-17 · 约 1642 字符</p>
+    <p class="lang-inline">English version → <a href="../blog/en/02.html">English</a></p>
+  </div></header>
+  <div class="container post-layout">
+    <div class="post-body"><h2 id="s1">为什么扫描件最难</h2>
+<p>正版电子书有干净的文本层，复制出来就能读。扫描件没有——它是 300 张图片。你想把它变成有声书，先得让机器"看见"字，再让它知道"哪里是第一章"，最后才是"读出来"。</p>
+<p>这条链路上任何一环偷懒，交付物就会露馅：OCR 漏字，听众听到半句断掉的话；分章靠猜，播放器里只有一个 9 小时的巨型文件；合成中断，重跑要从第 1 页开始。</p>
+<h2 id="s2">第一步：OCR，别整本重来</h2>
+<p>LoudPipe 用的是 Windows 内置的 OCR 引擎——离线、零模型下载，装好系统语言包就能跑。三个细节决定它好不好用：</p>
+<ul><li><strong>混合型 PDF 逐页判断</strong>：有文本层的页面直接用文本层，只有图片页才 OCR。很多"扫描书"其实是两者混排，全本 OCR 是纯浪费。</li><li><strong>页级缓存</strong>：每页识别完就落盘。跑到第 187 页崩了，重跑只补 188 页之后——这是长任务能不能忍受的分水岭。</li><li><strong>版面还原</strong>：按行距自适应断段、剔除页边页码、标题独立成段。否则合成出来会把页码也念一遍。</li></ul>
+<p>识别语言与 DPI 变更会让缓存自动失效，不用手动清。</p>
+<h2 id="s3">第二步：分章，按可信度排序</h2>
+<p>分章的优先级是：<strong>PDF 书签 → 正文标题（第X章 / Chapter N / 前言…）→ 按页兜底</strong>。有书签的书最省事；没有书签但有规范小标题的，正则能覆盖绝大多数；两者都没有的，才退化成"每 N 页一章"。</p>
+<p>这一步值得花十分钟检查。分错的章节，后面所有工作都白做。</p>
+<h2 id="s4">第三步：合成，把"长"当成常态</h2>
+<p>一本 300 页的书，合成可能要几十分钟，中间断网、限流都是常态。所以真正要看的不是"最快多久"，而是"断了怎么办"：</p>
+<ul><li><strong>按句分块 + 断点续传</strong>：每块合成完写 checkpoint，失败块单独重试，不重跑整本；</li><li><strong>发音词典</strong>：<code>Wwise → 维兹</code>、<code>LUFS → 路夫斯</code>、<code>Nyquist → 奈奎斯特</code>，支持正则与内置行业术语库。技术书不补词典，听众会被念到出戏；</li><li><strong>多角色配音</strong>：对话密集的书，用正则把不同角色的台词路由到不同语音，按句分组合成。</li></ul>
+<p>LoudPipe 内置 318 种声音、70+ 语言，启动就全部加载好，先试听再选——不用在几十个名字里盲选。</p>
+<h2 id="s5">第四步：封装成 M4B，而不是一堆 WAV</h2>
+<p>一章一个 WAV 只适合后期，不适合交付。交付要的是<strong>一个能跳章、能记进度、带封面的 M4B</strong>：</p>
+<ul><li>AAC 编码 + QuickTime 章节轨，播放器里直接跳章；</li><li>章间静音可调（默认 400 ms），听起来才像"一章结束"而不是"下一句接上"；</li><li>封面与元数据（书名、作者）一起写进去；</li><li>内置 ffmpeg 完成封装，不需要用户另装组件。</li></ul>
+<p>顺带一提：章节不只 M4B 有。WAV 的 <code>smpl/cue</code>、MP3 的 <code>CHAP</code>、FLAC/OGG 的 Vorbis CHAPTER、M4A/MP4 的 QuickTime 章节，LoudPipe 全都能写、能回读，精度到毫秒。</p>
+<h2 id="s6">别忘了最后一步：听</h2>
+<p>自动分章和 OCR 都会有误差。交付前至少抽查三处：第一章开头、任意一个章节切换点、最后一页。用波形和频谱看一眼静音占比——如果某章只有 3 秒，多半是 OCR 把标题当成了正文。</p>
+<p>扫描书变有声书，从来不是"一键魔法"，而是一条<strong>每步都留了退路</strong>的流水线。把 OCR 缓存、断点续传、分章规则、章节封装这四件事做扎实，300 页和 30 页的差别，只是等待时间。</p>
+<p>---</p>
+<p><strong>LoudPipe</strong> 已在 Microsoft Store 上架：扫描版 PDF 自动 OCR、按章合成、M4B 一键封装，全在一个窗口。</p>
+      <div class="post-end">— 全文完 —</div>
+      <nav class="post-nav"><a class="post-nav-item" href="01.html"><span>← 上一篇</span><strong>你的游戏语音为什么总被说“忽大忽小”？</strong></a><a class="post-nav-item next" href="03.html"><span>下一篇 →</span><strong>318 个声音里怎么选一个？</strong></a></nav>
+      <p class="post-back"><a href="../blog/">← 返回博客列表</a></p>
+    </div>
+    <aside class="post-toc"><h3>本文目录</h3><ol><li><a href="#s1">为什么扫描件最难</a></li><li><a href="#s2">第一步：OCR，别整本重来</a></li><li><a href="#s3">第二步：分章，按可信度排序</a></li><li><a href="#s4">第三步：合成，把&quot;长&quot;当成常态</a></li><li><a href="#s5">第四步：封装成 M4B，而不是一堆 WAV</a></li><li><a href="#s6">别忘了最后一步：听</a></li></ol></aside>
+  </div>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="brand footer-brand" href="../"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h4l3-9 4 18 4-24 4 20 3-9 3 4h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>LoudPipe</span></a>
+      <p class="footer-note">批量音频处理与文档转有声书，为 Windows 而做。</p>
+    </div>
+    <div class="footer-col">
+      <h3>产品</h3>
+      <a href="../#features">核心功能</a>
+      <a href="../#demos">视频演示</a>
+      <a href="../#download">下载</a>
+    </div>
+    <div class="footer-col">
+      <h3>资源</h3>
+      <a href="../blog/">博客</a>
+      <a href="../privacy.html">隐私政策</a>
+      <a href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-col">
+      <h3>联系</h3>
+      <a href="mailto:cdljn2022@gmail.com">cdljn2022@gmail.com</a>
+      <span class="footer-note">© 2026 LoudPipe</span>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>
