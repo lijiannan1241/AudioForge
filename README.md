@@ -7,7 +7,7 @@
 > 面向 Windows 的批量音频处理与文档转有声书工具 · 本地优先 · 无账号 · 无遥测
 > Batch audio processing and document-to-audiobook toolchain for Windows · local-first · no account · no telemetry
 
-[![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-14%20%E5%A4%A9%E8%AF%95%E7%94%A8%E2%80%94%E4%B9%B0%E6%96%AD-blue?style=for-the-badge&logo=microsoft)](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS)
+[![获取应用，来自微软商店](assets/img/store-badge-zh.svg)](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS) [![Get it from Microsoft Store](assets/img/store-badge-en.svg)](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS)
 [![Project site](https://img.shields.io/badge/%E9%A1%B9%E7%9B%AE%E4%B8%BB%E9%A1%B5-GitHub%20Pages-2ea44f?style=for-the-badge)](https://lijiannan1241.github.io/AudioForge/)
 [![English](https://img.shields.io/badge/English-Homepage-2ea44f?style=for-the-badge)](https://lijiannan1241.github.io/AudioForge/en/)
 [![Blog](https://img.shields.io/badge/%E5%8D%9A%E5%AE%A2-6%20%E7%AF%87%E5%AE%9E%E6%88%98%E6%96%87%E7%AB%A0-8250df?style=for-the-badge)](https://lijiannan1241.github.io/AudioForge/blog/)
@@ -51,7 +51,9 @@
 
 ## 获取 / Get it
 
-👉 **[从 Microsoft Store 获取 LoudPipe](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS)** — Windows 10 19041+ (x64)，内置 ffmpeg，无需单独安装。
+[![获取应用，来自微软商店](assets/img/store-badge-zh.svg)](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS) [![Get it from Microsoft Store](assets/img/store-badge-en.svg)](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS)
+
+或者点击文字链接：[从 Microsoft Store 获取 LoudPipe](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS) — Windows 10 19041+ (x64)，内置 ffmpeg，无需单独安装。
 
 其他构建形态（MSIX / EXE / ONEDIR / CLI）见 [Releases](https://github.com/lijiannan1241/AudioForge/releases)。
 
