@@ -59,6 +59,8 @@
   .download-card{text-decoration:none;color:inherit;transition:border-color .18s,transform .18s}
   .download-card:hover{border-color:var(--accent);transform:translateY(-2px)}
   .download-card:hover h3{color:var(--accent)}
+  .video-hero{grid-column:1/-1}
+  .video-hero .video-frame{max-height:560px;overflow:hidden}
   @media(max-width:760px){.price-grid{grid-template-columns:1fr}.hero-terms{margin-top:-38px}}
 </style>
 </head>
@@ -122,11 +124,20 @@
 
 <section id="demos" class="section section-alt">
   <div class="container">
-    <p class="kicker">VIDEO DEMOS</p><h2>Real workflows, no mockups</h2><p class="section-lede">Every clip is a real screen capture: dropping files, picking a voice, reading a report.</p>
-    <div class="grid grid-2"><article class="card video-card">
+    <p class="kicker">VIDEO DEMOS</p><h2>Real workflows, no mockups</h2><p class="section-lede">Every clip is a real screen capture — no mockups, no composited UI. Start with the 30-second pass, then watch any step in full.</p>
+    <div class="grid grid-2"><article class="card video-card video-hero">
+  <div class="video-frame">
+    <video controls preload="none" playsinline poster="../assets/img/hero_30s_poster.jpg" data-hero="hero-30s">
+      <source src="../assets/videos/hero_30s.mp4" type="video/mp4">
+      Your browser does not support embedded video.
+    </video>
+  </div>
+  <div class="video-meta"><span class="tag">30 SECONDS</span><h3>Batch audio, an audiobook, and the report — in one pass</h3></div>
+</article>
+<article class="card video-card">
   <div class="video-frame">
     <video controls preload="none" playsinline poster="../assets/img/poster_01_en.png">
-      <source src="../assets/videos/01_batch_zh.mp4" type="video/mp4">
+      <source src="../assets/videos/01_batch_en.mp4" type="video/mp4">
       Your browser does not support embedded video.
     </video>
   </div>
@@ -134,7 +145,7 @@
 </article><article class="card video-card">
   <div class="video-frame">
     <video controls preload="none" playsinline poster="../assets/img/poster_02_en.png">
-      <source src="../assets/videos/02_tts_zh.mp4" type="video/mp4">
+      <source src="../assets/videos/02_tts_en.mp4" type="video/mp4">
       Your browser does not support embedded video.
     </video>
   </div>
@@ -142,7 +153,7 @@
 </article><article class="card video-card">
   <div class="video-frame">
     <video controls preload="none" playsinline poster="../assets/img/poster_03_en.png">
-      <source src="../assets/videos/03_voices_ab_zh.mp4" type="video/mp4">
+      <source src="../assets/videos/03_voices_ab_en.mp4" type="video/mp4">
       Your browser does not support embedded video.
     </video>
   </div>
@@ -150,7 +161,7 @@
 </article><article class="card video-card">
   <div class="video-frame">
     <video controls preload="none" playsinline poster="../assets/img/poster_04_en.png">
-      <source src="../assets/videos/04_quality_report_zh.mp4" type="video/mp4">
+      <source src="../assets/videos/04_quality_report_en.mp4" type="video/mp4">
       Your browser does not support embedded video.
     </video>
   </div>
