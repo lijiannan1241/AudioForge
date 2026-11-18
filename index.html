@@ -26,6 +26,10 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://lijiannan1241.github.io/AudioForge/#website","url":"https://lijiannan1241.github.io/AudioForge/","name":"LoudPipe","description":"Windows 平台的批量音频响度归一、文档转有声书与质检报告工具。","inLanguage":"zh-CN","publisher":{"@type":"Organization","name":"LoudPipe","url":"https://lijiannan1241.github.io/AudioForge/"}},{"@type":"SoftwareApplication","@id":"https://lijiannan1241.github.io/AudioForge/#app","name":"LoudPipe","version":"1.10.0.0","applicationCategory":"MultimediaApplication","operatingSystem":"Windows 10 19041+ (x64)","description":"本地优先的 Windows 音频工具链：批量响度归一到 -23 / -19 / -16 LUFS 并限制真峰值，8 种文档格式转带章节有声书（318 种语音），每批输出 CSV / JSON / HTML 质检报告。","featureList":["批量响度归一与真峰值限制","文档转带章节有声书","318 种可试听语音，覆盖 70+ 语言","含波形与频谱的 CSV / JSON / HTML 报告","JSON 预设、命令行、失败隔离与断点续传"],"url":"https://lijiannan1241.github.io/AudioForge/","installUrl":"https://apps.microsoft.com/detail/9pn6cswk4jpz?cid=DevShareMCLPCS&hl=zh-CN&gl=US","publisher":{"@type":"Organization","name":"LoudPipe"}},{"@type":"FAQPage","@id":"https://lijiannan1241.github.io/AudioForge/#faq","mainEntity":[{"@type":"Question","name":"所有处理都在本地吗？","acceptedAnswer":{"@type":"Answer","text":"除语音合成外全部在本机完成：音频解码、降噪、响度分析、频谱、OCR 与报告都不上传。默认语音合成走微软 Edge 朗读服务；也可自行配置 Azure、OpenAI 或 ElevenLabs 的密钥。"}},{"@type":"Question","name":"支持哪些输出格式？","acceptedAnswer":{"@type":"Answer","text":"WAV、MP3、FLAC、M4A、AAC、OGG、Opus 共 7 种；采样率、位深与声道可一次对齐。除 M4B 外，WAV / MP3 / FLAC / M4A 也能写章节标记。"}},{"@type":"Question","name":"一个文件失败会怎样？","acceptedAnswer":{"@type":"Answer","text":"不会中断整批。失败项单独记录，重跑时只补失败文件，已完成的产物保持不动。"}},{"@type":"Question","name":"怎么和游戏引擎衔接？","acceptedAnswer":{"@type":"Answer","text":"命令行与 JSON 预设可进 CI；导出的 WAV / MP3 / FLAC / M4A 规格统一，可直接进入 Wwise 或 FMOD 的导入管线。"}},{"@type":"Question","name":"需要联网或账号吗？","acceptedAnswer":{"@type":"Answer","text":"没有账号、没有遥测、没有崩溃上报。只有语音合成需要网络；音频文件、源文档、文件名与路径都不会被上传。"}},{"@type":"Question","name":"Windows 版本要求？","acceptedAnswer":{"@type":"Answer","text":"Windows 10 版本 19041 或更高（x64）。内置 ffmpeg，无需单独安装。"}}]},{"@type":"BreadcrumbList","@id":"https://lijiannan1241.github.io/AudioForge/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"LoudPipe","item":"https://lijiannan1241.github.io/AudioForge/"}]}]}</script>
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/site.css">
+<style>
+  .hero-terms{margin:-36px 0 0;font-size:13px;color:var(--muted);text-align:center}
+  @media(max-width:760px){.hero-terms{margin-top:-38px}}
+</style>
 </head>
 <body class="home">
 <a class="skip" href="#main">跳到正文</a>
@@ -56,11 +60,12 @@
   <div class="container hero-inner">
     <p class="kicker">为 Windows 而做的本地音频工具链</p>
     <h1>重复的音频活儿，<br><span>一次做完。</span></h1>
-    <p class="hero-lede">批量统一响度、把文档读成带章节的有声书、每批自动生成报告——一个窗口完成，内置 ffmpeg，除语音合成外全程本地。</p>
+    <p class="hero-lede">批量统一响度、把文档读成带章节的有声书、每批自动生成报告——一个窗口完成。商店一次性买断，<strong>14 天试用</strong>，除语音合成外全程本地，无账号、无遥测。</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="#demos">看视频演示</a>
-      <a class="btn btn-ghost" href="https://github.com/lijiannan1241/AudioForge" target="_blank" rel="noopener">阅读文档 ↗</a>
+      <a class="btn btn-primary" href="https://apps.microsoft.com/detail/9pn6cswk4jpz?cid=lp-web&hl=zh-cn&gl=CN" target="_blank" rel="noopener noreferrer" data-store data-cid="lp-web" data-placement="hero">从 Microsoft Store 获取</a>
+      <a class="btn btn-ghost" href="#demos" data-cta="hero-demo">看 30 秒演示</a>
     </div>
+    <p class="hero-terms">Windows 10 / 11 · 14 天试用 · 试用期单批最多 20 个文件 · 无需信用卡、无需账号</p>
     <div class="hero-shot">
       <img src="assets/img/hero.png" alt="LoudPipe interface" width="1920" height="1080">
     </div>
