@@ -1,70 +1,67 @@
 # LoudPipe
 
-**批量音频处理 · 文档转有声书 · 质检报告 — 为 Windows 而做的本地优先工具链。**
+**500 个音频文件响度忽大忽小，文档转有声书还要在五个工具之间来回倒腾？LoudPipe 把响度归一、语音合成、章节写入和质检报告收进同一条本地管线——拖进去，一次跑完。**
 
-**Batch audio processing · document-to-audiobook · quality reports — a local-first toolchain for Windows.**
+**Tired of VO batches that jump in loudness and an audiobook workflow spread across five tools? LoudPipe folds normalization, speech synthesis, chapters and QA into one local-first pipeline — drop files in, ship in one run.**
 
-[🌐 项目网站 Project site](https://lijiannan1241.github.io/AudioForge/) · [📖 博客 Blog](https://lijiannan1241.github.io/AudioForge/blog/) · [💻 源码 Source](https://github.com/lijiannan1241/AudioForge) · [📄 隐私政策 Privacy](https://lijiannan1241.github.io/AudioForge/privacy.html)
+> 面向 Windows 的批量音频处理与文档转有声书工具 · 本地优先 · 无账号 · 无遥测
+> Batch audio processing and document-to-audiobook toolchain for Windows · local-first · no account · no telemetry
+
+[![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-14%20%E5%A4%A9%E8%AF%95%E7%94%A8%E2%80%94%E4%B9%B0%E6%96%AD-blue?style=for-the-badge&logo=microsoft)](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS)
+[![Project site](https://img.shields.io/badge/%E9%A1%B9%E7%9B%AE%E4%B8%BB%E9%A1%B5-GitHub%20Pages-2ea44f?style=for-the-badge)](https://lijiannan1241.github.io/AudioForge/)
+[![English](https://img.shields.io/badge/English-Homepage-2ea44f?style=for-the-badge)](https://lijiannan1241.github.io/AudioForge/en/)
+[![Blog](https://img.shields.io/badge/%E5%8D%9A%E5%AE%A2-6%20%E7%AF%87%E5%AE%9E%E6%88%98%E6%96%87%E7%AB%A0-8250df?style=for-the-badge)](https://lijiannan1241.github.io/AudioForge/blog/)
 
 ---
 
-## 这是什么 / What is it
+## 它解决的，正是音频交付里最烦的几件事 / Pain points → fixes
 
-LoudPipe 把音频交付里重复的部分收进一条管线：响度归一化、真峰值限制、降噪去齿音、格式转换、章节写入、文档转语音，以及随批产出的质检报告。除语音合成外全部在本机完成；没有账号、没有遥测、没有崩溃上报。
-
-LoudPipe folds the repetitive parts of audio delivery into one pipeline: loudness normalization, true-peak limiting, denoise and de-ess, format conversion, chapter writing, document-to-speech, and a report for every batch. Everything except speech synthesis runs locally — no account, no telemetry, no crash reporting.
-
-这个仓库是 **GitHub Pages 站点**：产品文档、演示视频、截图与推广博客。应用本身的构建脚本与源码在仓库外的主工程中；站点的生成脚本是 `../store/build_site.py`（主工程内）。
-
-This repository is the **GitHub Pages site**: product docs, demo videos, screenshots and promotional blog posts. The app source and build scripts live in the parent project; the site generator is `../store/build_site.py` in that project.
-
-## 网站内容 / Site contents
-
-| 路径 Path | 内容 Content |
+| 你遇到的痛点 Pain | LoudPipe 的做法 Fix |
 |---|---|
-| `/` | 中文首页：功能、5 段演示视频、截图画廊、下载、FAQ、博客入口 |
-| `/en/` | English homepage: features, 5 demos, gallery, downloads, FAQ, blog |
-| `/blog/` | 中文博客，6 篇推广文章（完整正文，非摘要） |
-| `/blog/en/` | English blog, 6 full-length articles |
-| `/privacy.html` | 隐私政策（中英双语单页，可直接用于商店提交） |
-| `/assets/videos/` | 5 段真实操作录屏（H.264 / yuv420p，浏览器可直接播放） |
-| `/assets/img/screens/` | 中英界面截图 1366×768，点击可放大 |
-| `/assets/css/`, `/assets/js/` | 零依赖样式与脚本（响应式、灯箱、移动导航） |
-| `/sitemap.xml`, `/robots.txt` | 搜索引擎收录入口，覆盖全部 17 个内容页 |
-| `/llms.txt` | GEO：面向生成式引擎的产品事实摘要与引用指引 |
+| 游戏 VO / 播客每集响度不一，平台抽检被打回 | 批量对齐到 **-23 / -19 / -16 LUFS**，4 倍过采样真峰值限制，实测偏差 **≤0.1 LU** |
+| 文档转有声书要拆页、OCR、分章、配音、封装，五步五工具 | **8 种输入**（DOCX / PDF / EPUB / SRT / MOBI 等），混合 PDF 逐页判断，扫描件**离线 OCR**，直接输出带章节 M4B |
+| 选配音靠猜，A/B 时谁响谁占便宜 | **318 种可试听声音**、70+ 语言；响度对齐后在同一位置切换，比音色不比音量 |
+| 交付前只能靠耳朵听，出了问题说不清 | 每批生成 **CSV / JSON / HTML 报告**，含波形、STFT 频谱与六段分带能量 |
+| 500 个文件跑批，一个坏了全停、重跑还得从头来 | 失败项隔离、断点续传，重跑只补失败文件；**JSON 预设 + CLI** 可进 CI |
+| 格式、采样率、章节标记分散在不同软件里 | **7 种容器**（WAV / MP3 / FLAC / M4A / AAC / OGG / Opus）；WAV / MP3 / FLAC / M4A 也能写章节 |
+| 怕音频和文档被上传到云端 | **除语音合成外全部本机完成**；无账号、无遥测、无崩溃上报，文件名与路径不上传 |
 
-**商店入口**：全部 17 个内容页的页头、页脚均带微软商店徽章（首页下载区另有一枚大徽章），统一指向 [LoudPipe 商店详情](https://apps.microsoft.com/detail/9pn6cswk4jpz?cid=DevShareMCLPCS&hl=zh-CN&gl=US)。徽章图形为本地 SVG，没有外部资源依赖。`google*.html` 是搜索站点验证文件，按要求保持原样。
+## 亮点速览 / Why LoudPipe
 
-**SEO / GEO**：每页有 canonical、hreflang（中/英/x-default）、Open Graph、Twitter Card 与 JSON-LD（WebSite / SoftwareApplication / FAQPage / BlogPosting / BreadcrumbList）；文章页带机器可读发布日期。GEO 部分提供 `llms.txt`、首页事实速览区与可引用的结构化事实。改文案后重新生成并校验 JSON-LD 合法性。
+- **一次跑完**：归一化 → 降噪去齿音 → 格式转换 → 章节 → 报告，一条管线串起来。
+- **数字可查**：≤0.1 LU 响度偏差、318 种声音、70+ 语言、7 种输出容器。
+- **本地优先**：音频解码、响度分析、频谱、OCR、报告都在本机；默认语音合成走 Edge 朗读，也可填 Azure / OpenAI / ElevenLabs 密钥。
+- **工程化就绪**：JSON 预设、命令行、失败隔离与续传，可直接接进 Wwise / FMOD 管线与 CI。
+- **买断制**：Microsoft Store 一次性购买，**14 天试用**（试用期单批最多 20 个文件），无需信用卡、无需账号。
 
-## 功能一览 / Capabilities
+## 谁适合用 / Who it's for
 
-- **响度归一**：-23 / -19 / -16 LUFS，4 倍过采样真峰值限制，实测偏差 ≤0.1 LU
-- **文档转语音**：DOCX / PDF / EPUB / SRT / MOBI 等 8 种输入，混合 PDF 逐页判断，扫描件离线 OCR
-- **318 种声音**：70+ 语言试听，发音词典、多角色路由、断点续传
-- **可视化质检**：CSV / JSON / HTML 报告，波形、STFT 频谱、六段分带能量
-- **公平 A/B**：响度对齐后同位置切换语音
-- **工程化**：JSON 预设、CLI、失败隔离与续传，可进 CI 与 Wwise / FMOD 管线
-- **7 种输出容器**：WAV / MP3 / FLAC / M4A / AAC / OGG / Opus，章节标记不局限于 M4B
+- 🎮 **游戏音频 / 独立开发者**：800 条 VO 一次对齐，导出的 WAV / MP3 直接进 Wwise、FMOD。
+- 🎙️ **播客与有声书制作人**：从扫描书到带章节 M4B，不用再拼接四个软件。
+- 🔊 **音频后期与 QA**：每批留下一份可机器读取的质检报告，问题能定位、能复现。
+- 🧪 **工具链工程师**：CLI + 预设让批处理可进 CI，失败可重试、结果可比对。
 
-English summary: batch loudness alignment at -23 / -19 / -16 LUFS with ≤0.1 LU measured deviation; 8 document formats with offline OCR; 318 auditionable voices across 70+ languages; CSV / JSON / HTML reports with waveform and STFT; loudness-matched A/B; JSON presets, CLI, failure isolation and resume; 7 output containers.
+## 看它怎么跑 / See it in action
 
-## 博客 / Blog
+- [项目主页（中文，含 5 段真实操作录屏与截图）](https://lijiannan1241.github.io/AudioForge/)
+- [English homepage](https://lijiannan1241.github.io/AudioForge/en/)
+- [博客：游戏 VO 响度、扫描书转有声书、语音选择、播客后期、质检数字、CI 批处理](https://lijiannan1241.github.io/AudioForge/blog/)
+- [English blog](https://lijiannan1241.github.io/AudioForge/blog/en/)
+- [隐私政策](https://lijiannan1241.github.io/AudioForge/privacy.html)
 
-| # | 中文 | English |
-|---|---|---|
-| 01 | 你的游戏语音为什么总被说"忽大忽小" | Why Your Game VO Always Sounds Off |
-| 02 | 300 页扫描书，怎么变成能跳章的有声书 | From a 300-Page Scan to a Chaptered Audiobook |
-| 03 | 318 个声音里怎么选一个 | Choosing One Voice Out of 318 |
-| 04 | 把播客后期从 40 分钟压到 4 分钟 | Podcast Post-Production: 40 Minutes Down to 4 |
-| 05 | 有声书交付前，我必查的 7 个数字 | Seven Numbers I Check Before Shipping |
-| 06 | 把 500 个文件的批处理写进 CI | A 500-File Batch Inside CI |
+## 获取 / Get it
 
-每篇都有独立页面、目录、上一篇/下一篇导航与对应语言版本。Each article has its own page, table of contents, prev/next navigation and a matching translation.
+👉 **[从 Microsoft Store 获取 LoudPipe](https://apps.microsoft.com/store/detail/9PN6CSWK4JPZ?cid=DevShareMCLPCS)** — Windows 10 19041+ (x64)，内置 ffmpeg，无需单独安装。
 
-## 本地预览 / Local preview
+其他构建形态（MSIX / EXE / ONEDIR / CLI）见 [Releases](https://github.com/lijiannan1241/AudioForge/releases)。
 
-站点是纯静态文件，没有构建步骤：
+## 关于这个仓库 / About this repository
+
+这里是 **GitHub Pages 站点仓库**：产品文档、演示视频、截图与推广博客。应用源码与站点生成脚本在父工程，生成脚本为 `../store/build_site.py`。
+
+This repository hosts the **GitHub Pages site**: docs, demo videos, screenshots and blog posts. The app source and site generator live in the parent project (`../store/build_site.py`).
+
+本地预览（纯静态，无构建步骤）：
 
 ```bash
 cd AudioForge
@@ -72,35 +69,11 @@ python -m http.server 8000
 # http://localhost:8000/
 ```
 
-修改内容后从主工程重新生成：
+重新生成站点：回到父工程根目录运行 `python store/build_site.py`；生成脚本会覆盖页面、`assets/` 与 `privacy.html`，不会动 `.github/`、`LICENSE` 和搜索验证文件。
 
-```bash
-cd ..                 # 回到主工程根目录
-python store/build_site.py
-```
+`.github/workflows/static.yml` 在每次推送到 `main` 时部署整站到 GitHub Pages（仓库设置里 Pages source 需为 **GitHub Actions**）。站点内部全部使用相对路径，换自定义域名无需改链接。
 
-生成脚本会覆盖本站的页面、`assets/` 与 `privacy.html`，但不会动 `.github/`、`LICENSE`、搜索引擎验证文件。
-
-The site is plain static HTML with no build step. Regenerate it from the parent project with `python store/build_site.py`; the generator overwrites pages, `assets/` and `privacy.html`, leaving workflows, license and search-console verification files untouched.
-
-## 部署 / Deployment
-
-`.github/workflows/static.yml` 在每次推送到 `main` 时部署整个仓库到 GitHub Pages。仓库设置里的 Pages source 必须是 **GitHub Actions**。
-
-原有示例 workflow `jekyll-gh-pages.yml` 已停用（改名为 `.disabled`）：它与 static 工作流争用同一个 `concurrency: pages` 部署槽，会导致相互取消。
-
-Site URL: `https://lijiannan1241.github.io/AudioForge/`
-
-> 站点内部全部使用相对路径，因此换成自定义域名时不需要改任何链接。
-> All internal links are relative, so switching to a custom domain needs no URL rewrite.
-
-## 目录约定 / Conventions
-
-- 所有内部链接使用相对路径，页面可在任意路径前缀下工作
-- 视频 `preload="none"`，首屏只加载一张首图；截图懒加载
-- 无外部字体、脚本或 CDN；离线打开也能正常渲染
-- 中英页面结构逐节对应，语言切换链接指向当前文章的对应版本
-- 隐私政策与商店文案同源，修改 `../store/copy/privacy.html` 后需重新生成
+**Keywords / 关键词**：audio loudness normalization, LUFS, true peak, batch audio processing, document to audiobook, text to speech, TTS, audiobook generator, OCR, chapter markers, audio QA, waveform, spectrogram, FFmpeg, Wwise, FMOD, CLI audio tool, Windows audio software, local-first, Microsoft Store, 响度归一, 批量音频处理, 文档转有声书, 有声书制作, 音频质检
 
 ## 许可 / License
 
