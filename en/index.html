@@ -60,6 +60,29 @@
   .download-card:hover{border-color:var(--accent);transform:translateY(-2px)}
   .download-card:hover h3{color:var(--accent)}
   .video-hero{grid-column:1/-1}
+  .limit-card{border-left:2px solid var(--accent2)}
+  .limit-card h3{font-size:16px;margin:0 0 8px}
+  .limit-card p{font-size:13.6px;color:var(--muted);margin:0}
+  .verify{margin-top:20px;padding:16px 20px;border:1px solid var(--line);border-radius:12px;
+    background:var(--surface2);font-size:13.8px;color:var(--muted)}
+  .verify b{color:var(--fg)}
+  .lead-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}
+  .lead-form{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .lead-form input{flex:1 1 240px;min-width:0;padding:13px 16px;border-radius:10px;
+    border:1px solid var(--line);background:var(--bg);color:var(--fg);font-size:15px}
+  .lead-form input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .lead-form input::placeholder{color:#6b7a91}
+  .lead-form .btn{flex:0 0 auto}
+  .lead-note{font-size:12.6px;color:var(--muted);margin:12px 0 0;max-width:52ch}
+  .lead-note a{color:var(--accent2)}
+  .lead-ok{display:none;margin-top:16px;padding:14px 18px;border-radius:10px;
+    border:1px solid var(--accent);background:rgba(56,214,198,.08);font-size:14px}
+  .lead-box{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:24px}
+  .lead-box h3{margin:0 0 4px;font-size:16px}
+  .lead-box ul{list-style:none;padding:0;margin:12px 0 0;font-size:13.4px;color:var(--muted)}
+  .lead-box li{padding-left:22px;position:relative;margin:7px 0}
+  .lead-box li::before{content:"✓";position:absolute;left:0;color:var(--accent);font-weight:700}
+  @media(max-width:860px){.lead-wrap{grid-template-columns:1fr;gap:24px}}
   .video-hero .video-frame{max-height:560px;overflow:hidden}
   @media(max-width:760px){.price-grid{grid-template-columns:1fr}.hero-terms{margin-top:-38px}}
 </style>
@@ -192,6 +215,27 @@
   </div>
 </section>
 
+<section id="proof" class="section">
+  <div class="container">
+    <p class="kicker">BEFORE YOU BUY</p>
+    <h2>Three limits, stated up front</h2>
+    <p class="section-lede">A purchase you regret costs more than a purchase you skip, so here is what LoudPipe is not.</p>
+    <div class="grid grid-3">
+      <article class="card limit-card"><h3>Not a DAW</h3><p>No timeline, no multitrack, no plugin chain. LoudPipe processes files you have already edited, then gets them into delivery shape.</p></article>
+      <article class="card limit-card"><h3>The denoiser is spectral, not neural</h3><p>Good on hum, hiss, room tone and sibilance. It will not rebuild a ruined take — for that, iZotope RX is the right tool.</p></article>
+      <article class="card limit-card"><h3>AI narration is not accepted everywhere</h3><p>ACX and Audible generally require human narration. The 318 voices suit self-published audiobooks, internal training and Spotify / Google Play — check each marketplace first.</p></article>
+    </div>
+    <div class="verify"><b>Everything else on this page is checkable.</b> Version numbers, file sizes and release history are on <a href="https://github.com/lijiannan1241/AudioForge/releases" target="_blank" rel="noopener">GitHub Releases</a>; every clip in the demos is a screen capture of the shipping build, not a mockup; and the trial asks for no account, so you can measure the batch limit on your own files before paying anything.</div>
+    <!--
+      真实评价位：拿到用户授权后，取消注释并替换。三条以内，每条必须署名（名字/角色），
+      不要写无法核实的"行业领先""数万用户"。不要编造。
+    <div class="grid grid-3" style="margin-top:20px">
+      <blockquote class="card"><p>"…"</p><footer>— Name, role, studio</footer></blockquote>
+    </div>
+    -->
+  </div>
+</section>
+
 <section id="pricing" class="section">
   <div class="container">
     <p class="kicker">PRICING</p><h2>One price. No subscription.</h2>
@@ -274,6 +318,37 @@
       </table>
     </div>
     <p class="download-note">As of November 2026; competitor capabilities and prices change — check their documentation. LoudPipe does not replace a DAW, and the denoiser is spectral subtraction, not neural repair.</p>
+  </div>
+</section>
+
+<section id="checklist" class="section">
+  <div class="container">
+    <div class="lead-wrap">
+      <div>
+        <p class="kicker">FREE CHECKLIST</p>
+        <h2>The delivery checklist we run before every batch</h2>
+        <p class="section-lede">The loudness targets and pass/fail thresholds for ACX, Spotify, Audible, game VO and podcast delivery — the same numbers the report tab checks, on one page you can pin next to your desk.</p>
+        <form class="lead-form" id="lead-form" novalidate
+              data-endpoint=""
+              data-fallback="cdljn2022@gmail.com"
+              aria-label="Get the delivery checklist">
+          <input type="email" name="email" autocomplete="email" required placeholder="you@studio.com" aria-label="Your email address">
+          <button type="submit" class="btn btn-primary">Send the checklist</button>
+        </form>
+        <p class="lead-ok" id="lead-ok" role="status"></p>
+        <p class="lead-note">One email with the PDF, then at most one note when 1.11 ships. One-click unsubscribe, addresses never shared or sold. See the <a href="../privacy.html">privacy policy</a>.</p>
+      </div>
+      <aside class="lead-box">
+        <h3>What is on it</h3>
+        <ul>
+          <li>Targets: −23 / −19 / −16 LUFS and true-peak ceilings per platform</li>
+          <li>ACX noise floor, RMS window and peak limits</li>
+          <li>Sample rate, bit depth and channel rules per destination</li>
+          <li>The five checks that catch most rejections before upload</li>
+          <li>Chapter file naming that players actually sort correctly</li>
+        </ul>
+      </aside>
+    </div>
   </div>
 </section>
 
@@ -368,6 +443,49 @@
         sent = true;
         window.lpTrack("video_50", { id: v.dataset.hero });
       }
+    });
+  });
+})();
+</script>
+<script>
+/* 清单订阅：优先 POST 到 data-endpoint（Formspree / Buttondown / 自建均可）；
+   endpoint 为空时退化为 mailto，保证没有后端时表单也不是死的。 */
+(function () {
+  var f = document.getElementById("lead-form");
+  if (!f) return;
+  var ok = document.getElementById("lead-ok");
+  f.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var email = (f.elements.email.value || "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      f.elements.email.focus();
+      return;
+    }
+    var btn = f.querySelector("button");
+    var ep = f.dataset.endpoint;
+    if (window.lpTrack) window.lpTrack("email_signup", { placement: "checklist" });
+    if (!ep) {
+      location.href = "mailto:" + f.dataset.fallback +
+        "?subject=" + encodeURIComponent("LoudPipe delivery checklist") +
+        "&body=" + encodeURIComponent("Send the checklist to: " + email);
+      ok.textContent = "Your mail app will open — send that message and the checklist comes back to you.";
+      ok.style.display = "block";
+      return;
+    }
+    btn.disabled = true;
+    fetch(ep, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ email: email, source: "en-site-checklist" })
+    }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      f.style.display = "none";
+      ok.textContent = "Check your inbox — confirm the address and the checklist is yours.";
+      ok.style.display = "block";
+    }).catch(function () {
+      btn.disabled = false;
+      ok.textContent = "That did not go through. Email cdljn2022@gmail.com and we will send it manually.";
+      ok.style.display = "block";
     });
   });
 })();
