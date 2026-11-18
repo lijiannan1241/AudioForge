@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+# Search-console verification token: not a content page.
+Disallow: /google62978c85f5e67e5d.html
 
 Sitemap: https://lijiannan1241.github.io/AudioForge/sitemap.xml
 
